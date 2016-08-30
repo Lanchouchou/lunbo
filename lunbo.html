@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1 user-scalable=no"/>
+		<title>轮播图</title>
+		<link rel="stylesheet" href="css/luobo.css" />
+		
+		<script src="http://libs.baidu.com/jquery/1.11.1/jquery.min.js"></script>
+		<script>
+			new function (){
+			  var _self = this;
+			  _self.width = 646;
+			  _self.fontSize = 100;
+			  _self.widthProportion = function(){
+			    var p = (document.body&&document.body.clientWidth||document.getElementsByTagName("html")[0].offsetWidth)/_self.width;
+			    return p>1?1:p<0.5?0.5:p;
+			  };
+			  _self.changePage = function(){
+			    document.getElementsByTagName("html")[0].setAttribute("style","font-size:"+_self.widthProportion()*_self.fontSize+"px !important");
+			  };
+			  _self.changePage();
+			  window.addEventListener('resize',function(){_self.changePage();},false);
+			};
+		</script>
+	</head>
+	<body>
+		<div class="fullScreen">
+				<div class="left"> < </div>
+				<div class="right"> > </div>
+			<div class="btn-group">
+				<span class="active"></span>
+				<span></span>
+				<span></span>
+				<span></span>
+				<span></span>
+			</div>
+			<div class="img-box">
+				<img src="images/tu1.png" alt="" />
+				<img src="images/tu2.png" alt="" />
+				<img src="images/tu3.png" alt="" />
+				<img src="images/tu4.png" alt="" />
+				<img src="images/tu5.png" alt="" />
+				<!--<img src="images/tu1.png" alt="" />-->
+			</div>
+		</div>
+	<script>
+		var Width=window.screen.width;
+		var Height=window.screen.height;
+//		var imgs=document.getElementsByTagName("img");
+		for(var i=0;i<$("img").length;i++){
+			$("img")[i].style.width = Width + "px";
+			$("img")[i].style.height= Height + "px";
+		}
+		var adv={
+//			LIWIDTH:720,//每个广告图片的宽度
+			DURATION:500,//动画总时长
+			WAIT:3000,//自动轮播之间等待的时长
+			STEPS:150,//动画移动的总步数
+			timer:null,//保存当前正在播放的定时器序号
+			canAuto:true,//设置是否可以自动轮播
+			img_num:5,//图片的张数
+			n:0,  //第一张图片以0开始	
+			init:function(){
+				var self=this;
+				$(".img-box").css("width",(Width)*(self.img_num+1)+"px");
+				$(".left").click(function(){
+			        self.moveLeft();
+			        $(".right").css("color","white");
+			        self.span_active();
+			   });
+			    $(".right").click(function(){
+			    	$(".left").css("color","white");
+			        self.moveRight();
+			        self.span_active();
+			    })
+			},
+			moveLeft:function(){
+		        this.n++;
+//		        console.log(this.n);
+		        if(this.n>(this.img_num-1)){
+		            $(".left").css("color","#afafaf");
+		            this.n=this.img_num-1;
+        		}else{
+		        	$(".img-box").animate({marginLeft:-Width*this.n},500);
+//		        	console.log(-this.LIWIDTH*this.n);
+        		}
+    		},
+    		moveRight:function(){
+    			this.n--;
+    			if(this.n<0){
+    				$(".right").css("color","#afafaf");
+    				this.n=0;
+    			}else{
+    				$(".img-box").animate({marginLeft:-Width*this.n},500);
+    			}
+    		},
+    		span_active:function(){
+		        $(".btn-group span").removeClass("active");
+		        $(".btn-group span").eq(this.n).addClass("active");
+    		}
+	}
+		window.addEventListener("load",function(){
+			adv.init();
+		},false);
+		var star_x,move_x;
+		$(".img-box")[0].addEventListener('touchstart',function(e){
+				/*阻止默认事件*/
+			    e.preventDefault();
+			   /*记录触屏位置*/
+			   var touch = e.touches[0];
+				star_x = touch.pageX;
+				console.log(star_x);
+			});
+			$(".img-box")[0].addEventListener('touchmove',function(e){	
+				e.preventDefault();/*阻止默认事件*/				
+				var touch = e.touches[0];
+				move_x = touch.pageX;
+				console.log(move_x);
+			  });
+			$(".img-box")[0].addEventListener('touchend',function(e){
+				e.preventDefault();/*阻止默认事件*/
+				console.log(star_x-move_x);
+			  });
+	</script>
+	</body>
+</html>
